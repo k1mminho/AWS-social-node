@@ -26,13 +26,13 @@ module.exports = (sequelize, DataTypes) => {
       });
       this.hasMany(models.Chatroom, {
         sourceKey: "userId",
-        foreignKey: "user1",
-        as : 'user1'
+        foreignKey: "userId1",
+        as: "userId1",
       });
       this.hasMany(models.Chatroom, {
         sourceKey: "userId",
-        foreignKey: "user2",
-        as : 'user2'
+        foreignKey: "userId2",
+        as: "userId2",
       });
       this.hasMany(models.ChatMessage, {
         sourceKey: "userId",

@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class GroupPost extends Model {
     /**
@@ -11,26 +9,41 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.User, {
+        foreignKey: "writerId",
+        targetKey: "userId",
+      });
+      this.belongsTo(models.GroupChatroom, {
+        foreignKey: "roomId",
+        targetKey: "roomId",
+      });
+      this.hasMany(models.Comment, {
+        sourceKey: "postId",
+        foreignKey: "postId",
+      });
     }
   }
-  GroupPost.init({
-    postId: {
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-      type: DataTypes.INTEGER
+  GroupPost.init(
+    {
+      postId: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
+      },
+      roomId: DataTypes.INTEGER,
+      writerId: DataTypes.INTEGER,
+      title: DataTypes.STRING,
+      content: DataTypes.STRING,
+      category: DataTypes.STRING,
+      status: DataTypes.STRING,
+      readhit: DataTypes.INTEGER,
+      likes: DataTypes.INTEGER,
     },
-    roomId: DataTypes.INTEGER,
-    writerId: DataTypes.INTEGER,
-    title: DataTypes.STRING,
-    content: DataTypes.STRING,
-    category: DataTypes.STRING,
-    status: DataTypes.STRING,
-    readhit: DataTypes.INTEGER,
-    likes: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'GroupPost',
-  });
+    {
+      sequelize,
+      modelName: "GroupPost",
+    }
+  );
   return GroupPost;
 };
