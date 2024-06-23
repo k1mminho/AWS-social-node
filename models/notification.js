@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     userId: DataTypes.INTEGER,
     title: DataTypes.STRING,
-    contennt: DataTypes.STRING,
+    content: DataTypes.STRING,
     isRead: DataTypes.TINYINT
   }, {
     sequelize,

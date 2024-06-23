@@ -19,7 +19,7 @@ module.exports = {
       title: {
         type: Sequelize.STRING,
       },
-      contennt: {
+      content: {
         type: Sequelize.STRING,
       },
       isRead: {
