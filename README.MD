@@ -18,3 +18,5 @@ npx sequelize db:seed:all
 git add .
 git commit -m ""
 git push origin hotcake
+
+됐나?
