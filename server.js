@@ -48,16 +48,15 @@ app.use(passport.session());
 const passportConfig = require('./passport')
 passportConfig()
 
-app.listen(11111, () => {
-  console.log(`http://192.168.219.106:11111`);
+app.listen(11111, '0.0.0.0', () => {
+  console.log(process.env.PORT11111);
 });
 
 const server = https.createServer(options, app).listen(port, () => {
-  console.log(`https://192.168.219.106:${port}`);
+  console.log(`${process.env.PORT10000}${port}`);
 });
 
 const { Server } = require("socket.io");
-const { userInfo } = require("os");
 const io = new Server(server, {
   cors: {
     origin: true,
