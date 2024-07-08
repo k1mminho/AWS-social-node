@@ -17,7 +17,7 @@ app.use(
 );
 const path = require("path");
 const models = require("./models");
-const {sequelize, Op} = require("sequelize")
+const {sequelize, Op, where} = require("sequelize")
 const session = require('express-session')
 const MySQLStore = require('express-mysql-session')(session)
 const passport = require('passport')
@@ -49,14 +49,15 @@ const passportConfig = require('./passport')
 passportConfig()
 
 app.listen(11111, () => {
-  console.log(`http://192.168.6.8:11111`);
+  console.log(`http://192.168.219.106:11111`);
 });
 
 const server = https.createServer(options, app).listen(port, () => {
-  console.log(`https://192.168.6.8:${port}`);
+  console.log(`https://192.168.219.106:${port}`);
 });
 
 const { Server } = require("socket.io");
+const { userInfo } = require("os");
 const io = new Server(server, {
   cors: {
     origin: true,
@@ -68,4 +69,5 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "/public/index.html"));
   res.send({ userInfo: req.user })
 });
+
 
