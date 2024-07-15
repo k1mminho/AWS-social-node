@@ -157,7 +157,7 @@ router.post("/api/join", async (req, res) => {
     status: "ok",
     role: "user",
     tier: "bronze",
-    profileImage: `https://192.168.219.104:10000/uploads/profileImages/defaultProfileImage.png`,
+    profileImage: process.env.PORTIMAGE +`/uploads/profileImages/defaultProfileImage.png`,
   };
 
   result = await models.User.create(data);
