@@ -69,7 +69,8 @@ app.get("/", (req, res) => {
   res.send({ userInfo: req.user })
 });
 
-app.use("/", require("./routes/authRouter"))
+app.use("/", require("./routes/authRouter"));
+
 
 app.get(`/api/post`, async(req, res) =>{
   const {postId} = req.query

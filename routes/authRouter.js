@@ -1,4 +1,3 @@
-require("dotenv").config();
 const router = require("express").Router();
 const passport = require("passport");
 const passportConfig = require("../passport");
@@ -6,14 +5,12 @@ const models = require("../models");
 const math = require("mathjs");
 const bcrypt = require("bcrypt");
 passportConfig();
-
 const mailer = require("nodemailer");
-const SMTPTransport = require("nodemailer/lib/smtp-transport");
-const transport = mailer.createTransport({
+const smtpTransport = mailer.createTransport({
   pool: true,
   maxConnections: 1,
   service: "naver",
-  host: "hotcake1234@naver.com",
+  host: "smtp.naver.com",
   port: 587,
   secure: false,
   requireTLS: true,
@@ -54,8 +51,11 @@ router.post("/api/login", (req, res, next) => {
 
 /**로그아웃 */
 router.get("/api/logout", (req, res) => {
-  req.logout(() => {
-    req.session.destroy();
+  req.logout();
+  req.session.destroy(() => {
+    if (err) {
+      return res.status(500).json({ message: "서버에러 발생", error: err });
+    }
     return res.send({ message: "success" });
   });
 });
@@ -80,41 +80,48 @@ router.get("/api/join/changedEmail", (req, res) => {
 });
 
 /**이메일 인증번호 발송 */
-router.post("/api/join/verifyEmail", async (req, res) => {
+router.post("/api/join/verifyEmail", (req, res) => {
   if (!req.session.isJoinEmailChecked)
     return res.send({ message: "notCheckedEmail" });
   const { email } = req.body;
-  const randumNum = math.randomInt(100000, 999999);
-  req.session.joinCode = randumNum;
+  const randNum = math.randomInt(100000, 999999);
+  req.session.joinCode = randNum;
+
   const mailOption = {
-    from: "hotcake1234@naver.com",
+    from: process.env.MAILER_USER,
     to: email,
-    subject: "이메일 확인",
-    text: `이메일 확인번호 : ${randumNum}`,
+    subject: "인증번호 발송",
+    text: `<h1>인증번호 : ${randNum}<h1>`,
   };
-  SMTPTransport.sendMail(mailOption, (error, info) => {
+
+  console.log("Sending email to:", email); // 디버깅 로그 추가
+
+  smtpTransport.sendMail(mailOption, (error, info) => {
     if (error) {
+      console.log('err : ', error.message)
       res.send({ message: "fail" });
-      SMTPTransport.close();
+      smtpTransport.close();
       return;
     } else {
-      res.send({ message: "success", joinCode: randumNum });
-      SMTPTransport.close();
+      res.send({ message: "success", joinCode: randNum });
+      smtpTransport.close();
       return;
     }
   });
-  return res.send({ message: "success", joinCode: randumNum });
+  return res.send({ message: "success", joinCode: randNum });
 });
 
 /** 인증번호 확인 */
-router.post("api/join/checkJoinCode", async (req, res) => {
+router.post("/api/join/checkJoinCode", async (req, res) => {
   if (!req.session.isJoinEmailChecked)
     return res.send({ message: "notCheckedEmail" });
-  const { joinCode } = req.body;
-  if (joinCode == req.session.joinCode) {
+  const { code } = req.body;
+  console.log(code)
+  if (code == req.session.joinCode) {
     req.session.isJoinEmailVerified = true;
     return res.send({ message: "success" });
   } else {
+    delete req.session.isJoinEmailVerified;
     return res.send({ message: "fail" });
   }
 });
@@ -157,7 +164,8 @@ router.post("/api/join", async (req, res) => {
     status: "ok",
     role: "user",
     tier: "bronze",
-    profileImage: process.env.PORTIMAGE +`/uploads/profileImages/defaultProfileImage.png`,
+    profileImage:
+      process.env.PORTIMAGE + `/uploads/profileImages/defaultProfileImage.png`,
   };
 
   result = await models.User.create(data);
