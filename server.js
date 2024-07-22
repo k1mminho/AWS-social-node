@@ -70,11 +70,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/", require("./routes/authRouter"));
-
-
-app.get(`/api/post`, async(req, res) =>{
-  const {postId} = req.query
-  const result = await models.Post.findOne({where : {postId : postId}})
-  return res.send(result)
-})
+app.use("/", require("./routes/groupChatRouter"));
+app.use("/", require("./routes/postRouter"));
 
