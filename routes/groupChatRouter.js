@@ -17,14 +17,14 @@ router.get("/api/groupChatRoom", async (req, res) => {
  *  초기 인원 bronze : 10명 silver : 15명 gold : 20명
  *  방 개수  bronze : 2개 , silver : 3개 , gold : 4개
  */
-router.post("/api/groupChatRoom", async (req, res) => {
+router.post("/api/groupChatRoom/post", async (req, res) => {
   try {
     const result = await models.GroupChatRoom.create({
       readerId: req.body.readerId,
       title: req.body.title,
-      status: req.body.status,
+      content : req.body.content,
       anonymous: req.body.anonymous,
-      profileImage: req.body.profileImage,
+      profileImage: req.body.profileImage || process.env.PORTIMAGE + `/uploads/profileImages/defaultProfileImage.png`,
       members: req.body.members,
     });
     res.send(result);
