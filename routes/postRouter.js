@@ -12,4 +12,13 @@ router.get("/api/post/:postId", async (req, res) => {
   res.send(result);
 });
 
+router.post("/api/write", async(req, res)=>{
+  const result = await models.Post.create({
+    title: req.body.title,
+    content: req.body.content,
+    writerId: req.body.writerId,
+  })
+
+})
+
 module.exports = router;
