@@ -1,15 +1,12 @@
 require("dotenv").config();
 const router = require("express").Router();
+const { where } = require("sequelize");
 const models = require("../models");
 
 /** 그룹찾기 */
 router.get("/api/groupChatRoom", async (req, res) => {
-  try {
-    const result = await models.GroupChatRoom.findAll();
+    const result = await models.GroupChatroom.findAll();
     res.send(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 
 /* 그룹 생성
@@ -19,7 +16,7 @@ router.get("/api/groupChatRoom", async (req, res) => {
  */
 router.post("/api/groupChatRoom/post", async (req, res) => {
   try {
-    const result = await models.GroupChatRoom.create({
+    const result = await models.GroupChatroom.create({
       readerId: req.body.readerId,
       title: req.body.title,
       content : req.body.content,
